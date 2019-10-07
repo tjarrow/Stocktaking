@@ -1,1 +1,5 @@
-Application client for viewing and editing equipment in the offices of the organization
+Как выполнить сборку приложения: 
+1) Перейти в корневую директорию проекта
+2) Подключить необходимые модули с помощью Webpack командой npm update
+3) Сгенерировать сборку с помощью Yarn командой yarn run dev-server
+4) В браузере перейти на http://localhost:8080/
