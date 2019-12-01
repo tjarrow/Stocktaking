@@ -62,7 +62,7 @@ class Equipment extends React.Component {
     const room_id = this.props.id;
     return (
       <div>
-        <span className="equipment-item__header">Список оборудования:</span>
+        <span className="equipment-item__header">Список оборудования организации:</span>
         {this.findItem(room_id)}
         <AddItem
           editById={this.state.editById}
