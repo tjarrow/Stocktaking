@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { loginUser } from "../../actions/authActions";
+// import TextFieldGroup from "../common/TextFieldGroup";
+
 class Login extends React.Component {
 
   constructor(props) {
@@ -46,33 +49,6 @@ class Login extends React.Component {
     this.props.loginUser(userData);
   }
 
- //  handleClick (event) {
- //     var apiBaseUrl = "http://localhost:8080/api/"; // или localhost:4000 ?
- //     var self = this;
- //     var payload = {
- //       "email": this.state.username,
- //       "password": this.state.password
- //     }
- //
- //     axios.post(apiBaseUrl + 'login', payload)
- //     .then(function (response) {
- //       console.log(response);
- //       if (response.data.code == 200) {
- //         console.log("Login successfull");
- //         // var uploadScreen=[];
- //         // uploadScreen.push(<UploadScreen appContext={self.props.appContext}/>)
- //         // self.props.appContext.setState({loginPage:[],uploadScreen:uploadScreen})
- //     }
- //     else if (response.data.code == 204) {
- //       console.log ("Username password do not match");
- //     } else {
- //       console.log("Username does not exists");
- //       }
- //     }).catch(function (error) {
- //       console.log(error);
- //     });
- // }
-
   render () {
     const { errors } = this.state;
 
@@ -80,7 +56,7 @@ class Login extends React.Component {
       <div className="auth-form">
         <form onSubmit={this.onSubmit} className="auth-btn-wrapper">
             <h2 className="start-header">Войдите в ваш аккаунт Stocktaking</h2>
-            <TextFieldGroup
+            <input
               className="auth-input"
               name="email"
               placeholder="Введите логин"
@@ -89,7 +65,7 @@ class Login extends React.Component {
               onChange={this.onChange}
               type="email"
             />
-            <TextFieldGroup
+            <input
               className="auth-input"
               name="password"
               placeholder="Введите пароль"
@@ -100,7 +76,8 @@ class Login extends React.Component {
             />
             <input
               type="submit"
-              className="auth-submit"
+              value="Войти"
+              className="auth-input"
             />
         </form>
       </div>
