@@ -1,6 +1,6 @@
 import React from 'react';
-import AddItem from './AddItem';
-import '../server/data.js';
+import equipment from "../equipment.json";
+import nextId from "react-id-generator";
 
 class Equipment extends React.Component {
   constructor(props) {
@@ -11,15 +11,67 @@ class Equipment extends React.Component {
       showAddBtn: true,
       showIdInput: false,
       showRoomInput: true,
-      editById: '',
-      editByName:''
+      editByName:'',
+      itemName: '',
+      itemId: '',
+      itemCount: 1,
+      editById:''
     };
     this.handleDeleteItem = this.handleDeleteItem.bind(this);
+    this.handleAddItem = this.handleAddItem.bind(this);
+    this.handleEditItem = this.handleEditItem.bind(this);
   }
 
-  findItem = (room_id) => {
+    handleChangeItem = (e) => {
+      const target = e.target;
+      const value = target.value;
+      const name = target.name;
+      this.setState ({
+        [name] : value
+      });
+    }
+
+    handleAddItem = (e) => {
+      e.preventDefault();
+        let comp = {
+          "name": this.state.itemName,
+          "room": this.props.room_name,
+          "count": Number.parseInt(this.state.itemCount),
+          "_id": nextId()
+        };
+        this.setState({equipments: this.state.equipments.concat(comp)});
+        console.info("Item added");
+          this.render();
+    }
+
+    handleEditItem = (e) => {
+      e.preventDefault();
+      var index = e.target.className;
+      console.log(index);
+      // const item = this.state.equipments.filter(el => el._id == index);
+      // console.log(item);
+      for (var i = 0; i < this.state.equipments.length; i++) {
+           if(this.state.equipments[i]._id === index) {
+             this.state.equipments[i]._id = this.state.itemId;
+             this.state.equipments[i].name = this.state.itemName;
+             this.state.equipments[i].count =  Number.parseInt(this.state.itemCount);
+             console.info("Item edited");
+            }
+        }
+        this.setState({equipments: this.state.equipments });
+    }
+
+    handleDeleteItem = (e) => {
+      var index = e.target.id;
+      console.log(index);
+      const equipments = this.state.equipments.filter(el => el._id !== index);
+      this.setState({equipments}, console.log);
+      console.info(this.state.equipments);
+    }
+
+  findItem = (room_name) => {
     return this.state.equipments
-    .filter((e) => e.room === room_id)
+    .filter((e) => e.room === room_name)
     .map((equipment, index) => (
       <div className="equipment-item">
         <span room={`${equipment.room}`} key={index}>{equipment.name} - x{equipment.count}</span>
@@ -32,45 +84,88 @@ class Equipment extends React.Component {
   }
 
   handleShowEditComponents = (e) => {
+    var index = e.target.className;
+    //const item = this.state.equipments.filter(el => el._id == index);
+    this.state.editById = index;
+    for (var i = 0; i < this.state.equipments.length; i++) {
+         if(this.state.equipments[i]._id === index) {
+           this.state.editByName = this.state.equipments[i].name;
+         }
+      }
+  //  this.state.editByName = item.name;
+    console.info(this.state.editByName);
+    console.log(this.state.editById);
     this.setState({
-      editById: e.target.className,
       showEditBtn: !this.state.showEditBtn,
       showAddBtn: !this.state.showAddBtn,
       showIdInput: !this.state.showIdInput,
       showRoomInput:!this.state.showRoomInput
     });
-  }
 
-  handleDeleteItem = (e) => {
-    let equip = new Scorocode.Object("equipment");
-    equip.getById(e.target.id).then((item) => {
-	  equip.remove(item).then(() => {
-      console.info("Item removed");
-    });
-   });
   }
 
   componentDidMount() {
-    var eq = new Scorocode.Query("equipment");
-    eq.find().then((found) => {
-      let equipment = found.result;
-      this.setState({equipments: equipment});
-    });
+      this.setState({
+        equipments: equipment
+      });
+      console.info(equipment);
+  }
+
+  componentDidUpdate() {
+    this.render();
   }
 
   render() {
-    const room_id = this.props.id;
+    const room_name = this.props.room_name;
     return (
       <div>
-        <span className="equipment-item__header">Список оборудования организации:</span>
-        {this.findItem(room_id)}
-        <AddItem
-          editById={this.state.editById}
-          showEditBtn={this.state.showEditBtn}
-          showAddBtn={this.state.showAddBtn}
-          showIdInput={this.state.showIdInput}
-          showRoomInput={this.state.showRoomInput}
-        />
+        <span className="room_number__header">{this.props.room_name}</span>
+        <span className="equipment-item__header">Список оборудования:</span>
+        {this.findItem(room_name)}
+        <div>
+          <form className='add-item'>
+            {this.state.showIdInput  &&
+            <label>
+              ID оборудования:
+              <input
+                value={this.state.editById}
+                className='add-item-id__input'
+                type='text' name='itemId'
+                placeholder='ID'
+                onChange={e => this.handleChangeItem(e)} />
+            </label>
+            }
+            <label>
+              Название оборудования:
+              <input
+                className='add-item-name__input'
+                type='text' name='itemName'
+                // value={this.state.editByName}
+                placeholder='Стол'
+                onChange={e => this.handleChangeItem(e)} />
+            </label>
+
+            <label>
+              Количество:
+              <input
+                className='add-item-count__input'
+                type='number'
+                min = '1'
+                name='itemCount'
+                value={this.state.itemCount}
+                onChange={e => this.handleChangeItem(e)} />
+            </label>
+            {this.state.showAddBtn &&
+            <button onClick={e => this.handleAddItem(e)}  className="button">Добавить оборудование</button>
+            }
+            {this.state.showEditBtn &&
+            <button onClick={e => this.handleEditItem(e)}  className={this.state.editById}>Редактировать оборудование</button>
+            }
+            <button onClick={e => this.handleTransferItem(e)} className={this.state.editById}>Перенести в другую комнату </button>
+          </form>
+
+        </div>
+
       </div>
     );
   }
