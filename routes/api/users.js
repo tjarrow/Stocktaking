@@ -4,10 +4,11 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
 const passport = require("passport");
+const path = require('path');
 
 // Load Input validation
-const validateRegisterInput = require("../../validation/register");
-const validateLoginInput = require("../../validation/login");
+//const validateRegisterInput = require(path.resolve(__dirname, "..", "..", "validation", "register"));
+//const validateLoginInput = require("../../validation/login");
 
 // Import user model
 const User = require("../../models/User");
