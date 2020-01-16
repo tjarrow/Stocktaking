@@ -133,17 +133,26 @@ class Equipment extends React.Component {
         });
       });
 
-      console.log(roomnames);
+      console.log(this.state.itemRoom);
 
       let valid_room = roomnames.filter(name => name === this.state.itemRoom);
 
-      console.log(valid_room);
-
       if (valid_room.length === 0) {
-        alert("Такой комнаты не существует");
-        this.state.validRoomNumber = false;
-      }
+          alert("Такой комнаты не существует");
+          this.state.validRoomNumber = false;
+        } else {
+          this.state.validRoomNumber = true;
+        }
 
+      if (this.props.room_name === this.state.itemRoom) {
+        alert("Вы уже находитесь в этой комнате");
+        this.state.validRoomNumber = false;
+        } else {
+          this.state.validRoomNumber = true;
+        }
+
+
+      console.log(this.state.validRoomNumber);
 
       for (var i = 0; i < this.state.equipments.length; i++) {
          if((this.state.equipments[i]._id === index) && (this.state.validRoomNumber)) {
